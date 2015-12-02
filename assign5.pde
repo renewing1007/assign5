@@ -1,93 +1,496 @@
-PImage enemy;
-int enemyCount = 8;
-
-int[] enemyX = new int[enemyCount];
-int[] enemyY = new int[enemyCount];
-
+                          /* please implement your assign1 code in this file. */
+  PImage fighterImg;
+  PImage treasureImg;
+  PImage hpImg;
+  PImage enemyImg;
+  PImage bg1Img;
+  PImage bg2Img;
+  PImage bg3Img;
+  PImage bg4Img;
+  PImage end1Img;
+  PImage end2Img;
+  PImage start1Img;
+  PImage start2Img;
+  final int GAME_START=0;
+  final int GAME_RUN=1;
+  final int GAME_OVER=2;
+  int numFrames=5;
+  int gamestate = GAME_START;
+  boolean upPressed=false;
+  boolean downPressed=false;
+  boolean leftPressed=false;
+  boolean rightPressed=false;
+  final int straight=3;
+  final int slash=4;
+  final int diamond=5;
+  int state=3;
+  int treasure_x,treasure_y,hp_x,x2,y2,x3,y3;
+  float  fighterx1,fightery1;
+  float shootingSpeed;
+  int blockX;
+  int blockY;
+  //float spacingx,spacingy,spacingy1;
+  float shX, shY;
+  float [] enemy_y;
+  float [] enemy_x;
+  float [] enemy_X;
+  float [] enemy_Y;
+  PImage [] flameImg = new PImage[numFrames];
+  PImage[]shoot = new PImage[5];
+  boolean[]shooting = new boolean[5];
+  float bullet[][] = new float[5][2];
+  int c=0;
+  int nbrEnemy = 5;
+  int nbrEnemy1=8;
+  float enemyY;
+  float enemyX;
+  float enemyx;
+  float enemyy;
+   int disappear;
+   int disappear1;
+   //int notHere;
+   //int notHere1;
+   boolean [] enemy_xdetect;
+   boolean [] enemy_Xdetect;
+   boolean [] enemy_xshow;
+   boolean [] enemy_Xshow;
+  int [] enemy_xcurrentFrame;
+  int [] enemy_XcurrentFrame;
+   float animation;
 void setup () {
-	size(640, 480) ;
-	enemy = loadImage("img/enemy.png");
-	addEnemy(0);
+  size(640,480) ;  // must use this size.
+  // your code
+//load image 
+ fighterImg=loadImage("img/fighter.png");
+ treasureImg=loadImage("img/treasure.png");
+ hpImg=loadImage("img/hp.png");
+ enemyImg=loadImage("img/enemy.png");
+ 
+ bg1Img=loadImage("img/bg1.png");//bg1
+ bg2Img=loadImage("img/bg2.png");//bg2
+ bg3Img=loadImage("img/bg1.png");//bg1
+ bg4Img=loadImage("img/bg2.png");//bg2
+ end1Img=loadImage("img/end1.png");
+ end2Img=loadImage("img/end2.png");
+ start1Img=loadImage("img/start1.png");
+ start2Img=loadImage("img/start2.png");
+ treasure_x=floor(random(600));
+ treasure_y=floor(random(34,440));
+ //treasure_x=176;
+ //treasure_y=100;
+enemy_x=new float[nbrEnemy];
+enemy_y=new float[nbrEnemy];
+enemy_X=new float[nbrEnemy1];
+enemy_Y=new float[nbrEnemy1];
+enemy_xdetect=new boolean[nbrEnemy]; 
+enemy_Xdetect=new boolean[nbrEnemy1]; 
+enemy_xshow=new boolean[nbrEnemy]; 
+enemy_Xshow=new boolean[nbrEnemy1];
+enemy_xcurrentFrame=new int[nbrEnemy];
+enemy_XcurrentFrame=new int[nbrEnemy1];
+blockX=enemyImg.width+5;
+blockY=enemyImg.height;
+hp_x=38;
+enemyx=0;
+enemyy=300;
+//enemyx=-(4*blockX+enemyImg.width);
+//enemyy=random(2*blockY,height-blockY);
+ animation= (frameCount % (24/10));
+ for(int i=0; i<nbrEnemy; i++){
+ enemy_x[0]=enemyx;
+ enemy_y[0]=enemyy;
+ 
+ }
+ for(int i=0; i<nbrEnemy1; i++){
+ enemy_X[0]=enemyX;
+ enemy_Y[0]=enemyY;
+ }
+ 
+ //enemy_y=315;
+ //enemy_y=floor(random(135,315));
+ 
+ for (int i=0; i<numFrames; i++){
+ flameImg[i]=loadImage("img/flame"+(i+1)+".png");
+ }
+ frameRate(60);
+ //frameRate(10);
+ x2=-640;//cordinate of bg1
+ y2=0;//cordinate of bg2
+ x3=-1920;
+ y3=-1280;
+ fighterx1=width-50;
+ fightery1=height/2;
+//fighterx1=176;
+//fightery1=200;
+ for(int c=0; c<5; c++){shoot[c]= loadImage("img/shoot.png");}
+  for(int c=0; c<5; c++){shooting[c]= false;}
 }
 
-void draw()
-{
-	background(0);
-	for (int i = 0; i < enemyCount; ++i) {
-		if (enemyX[i] != -1 || enemyY[i] != -1) {
-			image(enemy, enemyX[i], enemyY[i]);
-			enemyX[i]+=5;
-		}
-	}
+
+void draw() {
+  // your code
+  switch(gamestate){
+  case GAME_START:
+   background(0);
+  image(start2Img,0,0);
+  if(mouseY>375 && mouseY<420){
+    if(mouseX>200 && mouseX<450){
+    background(0);
+  image(start1Img,0,0);
+  if(mousePressed){
+  gamestate=1;
+  }
+  }else{
+  background(0);
+  image(start1Img,0,0);
+  }
+    }
+  
+  
+  break;
+  
+  case 1:
+  
+  background(0);
+  image(bg1Img,x2,0);
+
+  x2++;//bg1 move to right
+  image(bg2Img,y2,0);
+  y2++;//bg2 move to right
+  image(bg1Img,x3,0);
+  x3++;//bg1 move to right
+  image(bg2Img,y3,0);
+  y3++;//bg2 move to right
+  
+  
+  //background cycle
+  if(x2==0 && y2==640){
+  x3=-1280;
+  y3=-640;}
+  if(x3==0 && y3==640){
+  x2=-1280;
+  y2=-640;}
+ 
+ 
+ //fighter 
+ image(fighterImg,fighterx1,fightery1); 
+  //keypressed
+  if(rightPressed){
+    fighterx1+=5;
+   }if(leftPressed){
+    fighterx1-=5;
+   }if(upPressed){
+    fightery1-=5;
+   }if(downPressed){
+    fightery1+=5;
+   }
+ 
+ //boundary detection
+ if(fighterx1>width-50){
+    fighterx1=width-50;
+   }
+ if(fighterx1<=0){
+    fighterx1=0;
+   }
+ if(fightery1>height-50){
+    fightery1=height-50;
+   }  
+ if(fightery1<=0){
+    fightery1=0;}
+   
+    
+    //more fun
+  /*  
+  if(fightery1>enemy_y){
+  enemy_y+=2;}
+  if(fightery1<enemy_y)
+  {enemy_y-=2;}
+  
+  if(fightery1==enemy_y){
+  fightery1=enemy_y;
+  enemy_x+=2;
+  }
+  */
+ 
+  
+   //if the fighter gets the treasure
+   
+    //if the fighter gets the treasure
+  if(treasure_x-40 <= fighterx1 && fighterx1 <= treasure_x+40 ){
+     if(treasure_y-50 <= fightery1 && fightery1 <= treasure_y+40){
+     hp_x+=19;
+     if(hp_x>190){
+     hp_x=190;
+     }
+     treasure_x=floor(random(600));
+     treasure_y=floor(random(34,440));
+   } 
+   }
+  
+ 
+  //hp
+  fill(#FF0000);
+  rect(13,5,hp_x,15);
+  image(hpImg,0,0);
+  //treasure
+  image(treasureImg,treasure_x,treasure_y);
+
+  //bullet
+for(int c=0;c<5;c++){
+   if(shooting[c]){
+    bullet[c][0]-=5;  
+    shX= bullet[c][0];
+    shY= bullet[c][1]+10;
+    image(shoot[c],shX,shY);
+   }
+   if(shX-shootingSpeed<=0){
+    shooting[c]=false;
+    shX=2000;
+   }
+  }
+switch(state){
+ case straight: 
+enemyx+=3;
+//frameRate(24);
+//enemy staright
+ for(int i=0; i<5;i++){
+//println(enemy_x[i]);
+if(enemy_xdetect[i]==false){
+enemy_x[i]=enemyx+i*blockX; 
+enemy_y[i]=enemyy;   
+if(fighterx1+fighterImg.width>enemy_x[i]  && fighterx1 < enemy_x[i]+enemyImg.width&& 
+ enemy_y[i] <fightery1+fighterImg.height && fightery1 < enemy_y[i]+enemyImg.height){
+//hp_x-=38;
+enemy_xdetect[i]=true;
+enemy_xshow[i]=true;
+}
+for(int c=0;c<5;c++){
+if(shooting[c]==true){
+if(enemy_y[i]+60>=shY && shY>=enemy_y[i]-30){
+if(enemy_x[i]-30<=shX && shX<=enemy_x[i]+60){
+enemy_xdetect[i]=true;
+enemy_xshow[i]=true;
+shooting[c]=false;shX=2000;
+}
+ }
+  }
+   }
+    }
+if(enemy_xshow[i]==true){
+if(frameCount % (60/10) == 0){
+enemy_xcurrentFrame[i]++;
+}
+if(enemy_xcurrentFrame[i]<5){
+image(flameImg[enemy_xcurrentFrame[i]],enemyx+i*blockX,enemyy);
+}
+}
+if(enemy_xdetect[i]==true){
+enemy_x[i]=-100;
 }
 
-// 0 - straight, 1-slope, 2-dimond
-void addEnemy(int type)
-{	
-	for (int i = 0; i < enemyCount; ++i) {
-		enemyX[i] = -1;
-		enemyY[i] = -1;
-	}
-	switch (type) {
-		case 0:
-			addStraightEnemy();
-			break;
-		case 1:
-			addSlopeEnemy();
-			break;
-		case 2:
-			addDiamondEnemy();
-			break;
-	}
-}
+image(enemyImg,enemy_x[i],enemy_y[i]);
+//if the fighter is attacked by the enemy
+   
+if(enemyx>width){
+   //detect=false; 
+  enemyx=-(4*blockX+enemyImg.width);
+  enemyy=random(5*blockY,height-blockY);
+  //enemyx=300;
+  //enemyy=400; 
+   state=4;
+ } 
 
-void addStraightEnemy()
-{
-	float t = random(height - enemy.height);
-	int h = int(t);
-	for (int i = 0; i < 5; ++i) {
+ }
+ break;
+ 
+ case 4:
+//image(enemyImg,enemy_x,enemy_y);
 
-		enemyX[i] = (i+1)*-80;
-		enemyY[i] = h;
-	}
+ enemyx+=3;
+ 
+for(int i=0; i<5;i++){
+//println(enemy_x[i]);
+if(enemy_xdetect[i]==false){
+enemy_x[i]=enemyx+i*blockX; 
+enemy_y[i]=enemyy-i*blockY; 
+if(fighterx1+fighterImg.width>enemy_x[i]  && fighterx1 < enemy_x[i]+enemyImg.width&& 
+ enemy_y[i] <fightery1+fighterImg.height && fightery1 < enemy_y[i]+enemyImg.height){
+ //hp_x-=38;
+enemy_xdetect[i]=true;
+enemy_xshow[i]=true;
 }
-void addSlopeEnemy()
-{
-	float t = random(height - enemy.height * 5);
-	int h = int(t);
-	for (int i = 0; i < 5; ++i) {
+for(int c=0;c<5;c++){
+if(shooting[c]==true){
+if(enemy_y[i]+60>=shY && shY>=enemy_y[i]-30){
+if(enemy_x[i]-30<=shX && shX<=enemy_x[i]+60){
+enemy_xdetect[i]=true;
+enemy_xshow[i]=true;
+shooting[c]=false;shX=2000;
+}
+ }
+  }
+   }
+}
+if(enemy_xshow[i]==true){
+if(frameCount % (60/10) == 0){
+enemy_xcurrentFrame[i]++;
+}
+if(enemy_xcurrentFrame[i]<5){
+image(flameImg[enemy_xcurrentFrame[i]],enemyx+i*blockX,enemyy-i*blockY);
+}
+}
+if(enemy_xdetect[i]==true){
+enemy_x[i]=-100;
+}
+ image(enemyImg,enemy_x[i],enemy_y[i]);
+ if(enemyx>width){
+   //detect=false; 
+  //enemyX=300;
+  //enemyY=150;
+  enemyX=-(2*blockX+enemyImg.width);
+  enemyY=random(blockY,height-5*blockY); 
+    state=5;
+ }
+ }
+ break;
 
-		enemyX[i] = (i+1)*-80;
-		enemyY[i] = h + i * 40;
-	}
+case 5:
+enemyX+=3;
+for(int i=0; i<8;i++){
+  if(enemy_Xdetect[i]==false){
+enemy_Y[i]=enemyY+i*blockY;
+enemy_X[i]=enemyX-(2-abs(i-2))*blockX;
+if(i>=5){
+enemy_X[i]=enemyX+(2-abs(i-6))*blockX;
+enemy_Y[i]=enemyY+(i-4)*blockY;
 }
-void addDiamondEnemy()
-{
-	float t = random( enemy.height * 3 ,height - enemy.height * 3);
-	int h = int(t);
-	int x_axis = 1;
-	for (int i = 0; i < 8; ++i) {
-		if (i == 0 || i == 7) {
-			enemyX[i] = x_axis*-80;
-			enemyY[i] = h;
-			x_axis++;
-		}
-		else if (i == 1 || i == 5){
-			enemyX[i] = x_axis*-80;
-			enemyY[i] = h + 1 * 40;
-			enemyX[i+1] = x_axis*-80;
-			enemyY[i+1] = h - 1 * 40;
-			i++;
-			x_axis++;
-			
-		}
-		else {
-			enemyX[i] = x_axis*-80;
-			enemyY[i] = h + 2 * 40;
-			enemyX[i+1] = x_axis*-80;
-			enemyY[i+1] = h - 2 * 40;
-			i++;
-			x_axis++;
-		}
-	}
+if(fighterx1+fighterImg.width>enemy_X[i]  && fighterx1 < enemy_X[i]+enemyImg.width&& 
+enemy_Y[i] <fightery1+fighterImg.height && fightery1 < enemy_Y[i]+enemyImg.height){
+//hp_x-=38;
+enemy_Xdetect[i]=true;
+enemy_Xshow[i]=true;
 }
+for(int c=0;c<5;c++){
+if(shooting[c]==true){
+if(enemy_Y[i]+60>=shY && shY>=enemy_Y[i]-30){
+if(enemy_X[i]-30<=shX && shX<=enemy_X[i]+60){
+enemy_Xdetect[i]=true;
+enemy_Xshow[i]=true;
+shooting[c]=false;shX=2000;
+}
+ }
+  }
+   }
+}
+if(enemy_Xshow[i]==true){
+if(frameCount % (60/10) == 0){
+enemy_XcurrentFrame[i]++;
+}
+if(enemy_XcurrentFrame[i]<5){
+  if(i<5){
+  image(flameImg[enemy_XcurrentFrame[i]],enemyX-(2-abs(i-2))*blockX,enemyY+i*blockY);
+  }else{
+image(flameImg[enemy_XcurrentFrame[i]],enemyX+(2-abs(i-6))*blockX,enemyY+(i-4)*blockY);
+}
+}
+}
+if(enemy_Xdetect[i]==true){
+enemy_X[i]=-100;
+}
+image(enemyImg,enemy_X[i],enemy_Y[i]);
+if(enemyX-(enemyImg.width+2*blockX)>width){
+    enemyx=-(4*blockX+enemyImg.width);
+    enemyy=random(blockY,height-blockY);
+    //detect=false;
+    state=3;
+ }
+}
+break;
+ } 
+ if(hp_x<=0){
+ gamestate=2;}
+ break;
+ 
+  case 2:
+  background(0);
+  image(end1Img,0,0);
+  if(mouseY>300 && mouseY<350){
+    if(mouseX>200 && mouseX<445){
+   background(0);
+  image(end2Img,0,0);
+   if(mousePressed){
+  hp_x=38;
+   fighterx1=width-50;
+ fightery1=height/2;
+  
+     gamestate=1;
+//detect=false;
+enemyx=-(4*blockX+enemyImg.width);
+enemyy=random(2*blockY,height-blockY);
+  
+  state=3;
+  
+}
+  }
+  else{
+    background(0);
+  image(end1Img,0,0);
+  }  
+  }
+ 
+  break;
+  
+
+}  
+}  
+ void keyPressed(){
+ if(key== CODED){
+  switch(keyCode){
+  case UP:
+  upPressed=true;
+  break;
+  case DOWN:
+  downPressed=true;
+  break;
+  case RIGHT:
+  rightPressed=true;
+  break;
+  case LEFT:
+  leftPressed=true;
+  break;
+    } 
+   }
+  if(key==' '){
+    if(shooting[c]==false){
+     shooting[c]=true;
+     bullet[c][0]=fighterx1;
+     bullet[c][1]=fightery1;
+     c++; c=c%5;
+     key='d';}
+  } 
+} 
+ 
+ void keyReleased(){
+ if(key== CODED){
+  switch(keyCode){
+  case UP:
+  upPressed=false;
+  break;
+  case DOWN:
+  downPressed=false;
+  break;
+  case RIGHT:
+  rightPressed=false;
+  break;
+  case LEFT:
+  leftPressed=false;
+  break;
+    } 
+   }
+  }
+ 
+ 
+ 
+ 
+ 
+ 
